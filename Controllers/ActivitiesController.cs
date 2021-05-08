@@ -1,19 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ToDoActivities.DAL;
+using ToDoActivities.DAL.DataContexts;
+using ToDoActivities.DAL.Interfaces;
+using ToDoActivities.DAL.Repositories;
 using ToDoActivities.DAL.RepositoryServices;
 using ToDoActivities.DAL.ViewModels;
+using ToDoActivities.Models;
 
 namespace ToDoActivities.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class ActivitiesController : ControllerBase
-    {
+    { 
+        private IGenericRepository<Activity> _activitiesRepository;
         private ActivitiesDbService _activitiesDbService;
-        public ActivitiesController(ActivitiesDbService activitiesDbService)
+    
+        public ActivitiesController(IGenericRepository<Activity> activitiesRepository)
         {
-            _activitiesDbService = activitiesDbService;
+            _activitiesRepository = activitiesRepository;
         }
 
         [HttpPost("Create")]
@@ -25,15 +32,15 @@ namespace ToDoActivities.Controllers
         }
 
         [HttpGet("AllActivities")]
-        public async Task<List<ActivityViewModel>> GetAllActivitiesAsync()
-        { 
-            return await _activitiesDbService.GetActivitiesAsync();
+        public async Task<List<Activity>> GetAllActivitiesAsync()
+        {
+            return (List<Activity>) await _activitiesRepository.GetAllAsync();
         }
 
-        [HttpGet("Activity/{id?}")]
-        public async Task<ActionResult<ActivityViewModel>> GetActivityByIdAsync(int id)
+        [HttpGet("Activity/{id:long}")]
+        public async Task<ActionResult<Activity>> GetActivityByIdAsync(object id)
         {
-            var activity = await _activitiesDbService.GetActivityByIdAsync(id);
+            var activity = await _activitiesRepository.GetByIdAsync(id);
 
             if ( activity == null)
             {
