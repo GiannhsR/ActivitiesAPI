@@ -9,6 +9,5 @@ namespace ToDoActivities.DAL.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public List<Activity> Activity { get; set; }
     }
 }

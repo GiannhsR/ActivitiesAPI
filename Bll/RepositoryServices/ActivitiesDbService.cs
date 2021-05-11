@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ToDoActivities.DAL.DataContexts;
+using ToDoActivities.DAL.Interfaces;
 using ToDoActivities.DAL.ViewModels;
 using ToDoActivities.Models;
 
@@ -12,9 +13,12 @@ namespace ToDoActivities.DAL.RepositoryServices
     public class ActivitiesDbService
     {
         private AppDbContext _appDbContext;
-        public ActivitiesDbService(AppDbContext appDbContext)
+        private IGenericRepository<Activity> _activitiesRepository;
+
+        public ActivitiesDbService(AppDbContext appDbContext,IGenericRepository<Activity> activitiesRepository)
         {
             _appDbContext = appDbContext;
+            _activitiesRepository = activitiesRepository;
         }
 
         public async Task AddActivityAsync(ActivityViewModel activityViewModel)
@@ -31,35 +35,16 @@ namespace ToDoActivities.DAL.RepositoryServices
             await _appDbContext.SaveChangesAsync();
         }
 
-        public async Task<List<ActivityViewModel>> GetActivitiesAsync()
+        public async Task<List<Activity>> GetActivitiesAsync()
         {
-            return await _appDbContext.Activity
-                 .Select(s => new ActivityViewModel
-                 {
-                     ActivityId = s.ActivityId,
-                     Date = s.Date,
-                     Name = s.Name,
-                     Description = s.Description,
-                     IsCompleted = s.IsCompleted,
-                     IsDeleted = s.IsDeleted
-                 })
-                 .ToListAsync();
+            return (List<Activity>) await _activitiesRepository.GetAllAsync();
         }
 
         public async Task<ActivityViewModel> GetActivityByIdAsync(long id)
         {
-            return await _appDbContext.Activity
-                   .Where(s => s.ActivityId == id)
-                   .Select(s => new ActivityViewModel
-                   {
-                       ActivityId = s.ActivityId,
-                       Name = s.Name,
-                       Description = s.Description,
-                       IsCompleted = s.IsCompleted,
-                       Date = s.Date,
-                       IsDeleted = s.IsDeleted
-                   })
-                   .SingleOrDefaultAsync();
+            var activity =  await _activitiesRepository.GetByIdAsync(id);
+            ActivityViewModel activityViewModel = new ActivityViewModel(activity);
+            return activityViewModel;
         }
 
         public async Task<ActivityViewModel> GetActivityByNameAsync(string name)

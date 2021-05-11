@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoActivities.DAL.Models;
 
 namespace ToDoActivities.Models
 {
     public class Activity
     {
-       [Required]
+        [Required]
         public long ActivityId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

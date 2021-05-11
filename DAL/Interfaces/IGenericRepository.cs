@@ -9,7 +9,7 @@ namespace ToDoActivities.DAL.Interfaces
     public interface IGenericRepository<T> : IDisposable where T : class  
     {
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetByIdAsync(object id);
+        Task<T> GetByIdAsync(long id);
         void Insert(T obj);
         void Update(T obj);
         void Delete(object id);

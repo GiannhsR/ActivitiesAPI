@@ -31,7 +31,7 @@ namespace ToDoActivities.DAL.Repositories
             return await table.ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(object id)
+        public async Task<T> GetByIdAsync(long id)
         {
             return await table.FindAsync(id);
         }
