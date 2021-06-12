@@ -23,7 +23,7 @@ namespace ToDoActivities.DAL.Repositories
 
         public void Delete(object id)
         {
-            throw new NotImplementedException();
+            table.Remove((T) id);
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
@@ -36,9 +36,9 @@ namespace ToDoActivities.DAL.Repositories
             return await table.FindAsync(id);
         }
 
-        public void Insert(T obj)
+        public async void Insert(T obj)
         {
-            throw new NotImplementedException();
+            await table.AddAsync(obj);
         }
 
         public void Save()
@@ -48,7 +48,7 @@ namespace ToDoActivities.DAL.Repositories
 
         public void Update(T obj)
         {
-            throw new NotImplementedException();
+            table.Update(obj);
         }
 
         private bool disposed = false;
