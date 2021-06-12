@@ -31,14 +31,17 @@ namespace ToDoActivities.DAL.RepositoryServices
                 IsCompleted = activityViewModel.IsCompleted
             };
             _activitiesRepository.Insert(_activity);
+
+
             await _appDbContext.SaveChangesAsync();
         }
 
         public async Task<List<Activity>> GetActivitiesAsync()
         {
+                                                                                 
             return (List<Activity>)await _activitiesRepository.GetAllAsync();
-        }
-
+                                      
+                     
         public async Task<ActivityViewModel> GetActivityByIdAsync(long id)
         {
             var activity = await _activitiesRepository.GetByIdAsync(id);
@@ -51,8 +54,7 @@ namespace ToDoActivities.DAL.RepositoryServices
             return await _appDbContext.Activity
                    .Where(s => s.Name == name)
                    .Select(s => new ActivityViewModel
-                   {
-                       ActivityId = s.ActivityId,
+                   { ActivityId = s.ActivityId,
                        Name = s.Name,
                        Description = s.Description,
                        IsCompleted = s.IsCompleted,
@@ -75,8 +77,7 @@ namespace ToDoActivities.DAL.RepositoryServices
             /* This is an Update implemantation, part of the repository pattern */
             var ActivityToBeUpdated = await _activitiesRepository.GetByIdAsync(activityId);
             UpdateActivity(ActivityToBeUpdated, _activityViewModel);
-            _activitiesRepository.Update(ActivityToBeUpdated);
-            await _appDbContext.SaveChangesAsync();
+            _activitiesRepository.Update(ActivityToBeUpdated); 
         }
 
         public void UpdateActivity(Activity _activity, ActivityViewModel _activityViewModel)
@@ -85,11 +86,9 @@ namespace ToDoActivities.DAL.RepositoryServices
             _activity.Description = _activityViewModel.Description;
             _activity.IsCompleted = _activityViewModel.IsCompleted;
         }
-
-
+          
         public async Task DeleteActivityByIdAsync(long activityId)
-        {
-            //Does not actually deletes the entry,only updates IsDeleted --> true
+        { //Does not actually deletes the entry,only updates IsDeleted --> true
             var ActivityToBeUpdated = await _appDbContext.Activity.FindAsync(activityId);
             if (ActivityToBeUpdated is null)
             {
@@ -102,6 +101,7 @@ namespace ToDoActivities.DAL.RepositoryServices
             var ActivityToBeRemoved = await _activitiesRepository.GetByIdAsync(activityId);
             _activitiesRepository.Delete(ActivityToBeRemoved);
             await _appDbContext.SaveChangesAsync();*/
+
         }
     }
 }
