@@ -14,9 +14,9 @@ namespace ToDoActivities.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class ActivitiesController : ControllerBase
-    { 
+    {
         private ActivitiesDbService _activitiesDbService;
-    
+
         public ActivitiesController(ActivitiesDbService activitiesDbService)
         {
             _activitiesDbService = activitiesDbService;
@@ -41,9 +41,12 @@ namespace ToDoActivities.Controllers
         {
             var activity = await _activitiesDbService.GetActivityByIdAsync(id);
 
-            if ( activity == null)
+            if (activity == null)
             {
                 return NoContent();
+            }else if(activity.IsDeleted == true)
+            {
+                return NotFound();
             }
 
             return activity;
