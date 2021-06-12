@@ -14,13 +14,12 @@ namespace ToDoActivities.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class ActivitiesController : ControllerBase
-    { 
-        private IGenericRepository<Activity> _activitiesRepository;
+    {
         private ActivitiesDbService _activitiesDbService;
-    
-        public ActivitiesController(IGenericRepository<Activity> activitiesRepository)
+
+        public ActivitiesController(ActivitiesDbService activitiesDbService)
         {
-            _activitiesRepository = activitiesRepository;
+            _activitiesDbService = activitiesDbService;
         }
 
         [HttpPost("Create")]
@@ -34,17 +33,20 @@ namespace ToDoActivities.Controllers
         [HttpGet("AllActivities")]
         public async Task<List<Activity>> GetAllActivitiesAsync()
         {
-            return (List<Activity>) await _activitiesRepository.GetAllAsync();
+            return await _activitiesDbService.GetActivitiesAsync();
         }
 
         [HttpGet("Activity/{id:long}")]
-        public async Task<ActionResult<Activity>> GetActivityByIdAsync(object id)
+        public async Task<ActionResult<ActivityViewModel>> GetActivityByIdAsync(long id)
         {
-            var activity = await _activitiesRepository.GetByIdAsync(id);
+            var activity = await _activitiesDbService.GetActivityByIdAsync(id);
 
-            if ( activity == null)
+            if (activity == null)
             {
                 return NoContent();
+            }else if(activity.IsDeleted == true)
+            {
+                return NotFound();
             }
 
             return activity;
